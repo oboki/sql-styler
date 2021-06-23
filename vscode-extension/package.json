@@ -1,39 +1,26 @@
 {
-    "name": "sqlstyler",
-    "displayName": "SQLStyler",
-    "description": "Make your SQL more readable",
-    "version": "0.0.1",
-    "publisher": "oboki",
-    "engines": {
-        "vscode": "^1.32.0"
-    },
-    "categories": [
-        "Other"
-    ],
-    "activationEvents": [
-        "onCommand:extension.sqlStyler"
-    ],
-    "main": "./out/extension",
-    "contributes": {
-        "commands": [
-            {
-                "command": "extension.sqlStyler",
-                "title": "SQL Styler"
-            }
-        ]
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "lint": "eslint . --ext .ts,.tsx",
-        "watch": "tsc -watch -p ./"
-    },
-    "devDependencies": {
-        "@types/node": "^12.12.0",
-        "@types/vscode": "^1.32.0",
-        "@typescript-eslint/eslint-plugin": "^4.16.0",
-        "@typescript-eslint/parser": "^4.16.0",
-        "eslint": "^7.21.0",
-        "typescript": "^4.2.2"
-    }
+	"name": "sql-style",
+	"description": "Make your SQL more readable.",
+	"version": "0.0.1",
+	"publisher": "oboki",
+	"repository": "https://github.com/oboki/sql-styler",
+	"engines": {
+		"vscode": "^1.32.0"
+	},
+	"activationEvents": [
+		"onCommand:extension.sqlStyler"
+	],
+	"main": "./extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "extension.sqlStyler",
+				"title": "SQL Styler"
+			}
+		]
+	},
+	"scripts": {},
+	"devDependencies": {
+		"@types/vscode": "^1.32.0"
+	}
 }

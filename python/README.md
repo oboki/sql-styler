@@ -4,7 +4,7 @@
 
 ### SQL
 
-```sql
+```python
 from sql import SQL
 
 sql = SQL('select 1 from dual')
