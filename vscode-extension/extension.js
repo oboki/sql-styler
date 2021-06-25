@@ -12,14 +12,14 @@ const format = require('./sql-styler.js');
 function activate(context) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "sql-styler" is now active!');
+	console.log('Congratulations, your extension "SQL Styler" is now active!');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.sqlStyler', function () {
 		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World!');
+		// vscode.window.showInformationMessage('Hello World!');
 
 		// The code you place here will be executed every time your command is executed
 		const editor = vscode.window.activeTextEditor;
@@ -32,7 +32,6 @@ function activate(context) {
 			const word = document.getText(selection);
 			const formatted = format(word);
 			editor.edit(editBuilder => {
-				// editBuilder.replace(selection, reversed);
 				editBuilder.replace(selection, formatted);
 			});
 		}

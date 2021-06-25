@@ -1,7 +1,9 @@
 {
-	"name": "sql-style",
-	"description": "Make your SQL more readable.",
-	"version": "0.0.1",
+	"name": "sql-styler",
+	"displayName": "SQL Styler",
+	"description": "Make your SQL pretty.",
+	"icon": "icon.png",
+	"version": "0.0.2",
 	"publisher": "oboki",
 	"repository": "https://github.com/oboki/sql-styler",
 	"engines": {
@@ -15,7 +17,15 @@
 		"commands": [
 			{
 				"command": "extension.sqlStyler",
-				"title": "SQL Styler"
+				"title": "SQL Styler: Format SQL"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "extension.sqlStyler",
+				"key": "alt+shift+s",
+				"mac": "ctrl+shift+s",
+				"when": "editorTextFocus"
 			}
 		]
 	},

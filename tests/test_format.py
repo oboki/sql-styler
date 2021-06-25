@@ -1,4 +1,4 @@
-from lib.sql import SQL
+from lib.python.sql import SQL
 
 import unittest
 

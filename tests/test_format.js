@@ -1,4 +1,4 @@
-const format = require('./sql-styler.js');
+const format = require('../vscode-extension/sql-styler.js');
 
 const fs = require('fs');
 const path = require('path');
