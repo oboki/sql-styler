@@ -154,7 +154,7 @@ function tokenize(sql) {
             const word = sql.slice(idx_current-i, idx_current);
 
             if (isReservedWord(word)) {
-                if ((idx_current-i)-idx_processed > 0) {
+                if ((idx_current-i)-idx_processed >= 0) {
                     const tmp = sql.slice(
                         idx_processed,
                         idx_current - i
