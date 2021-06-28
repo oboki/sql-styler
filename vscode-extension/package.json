@@ -3,7 +3,7 @@
 	"displayName": "SQL Styler",
 	"description": "Format your SQL code pretty and readable.",
 	"icon": "icon.png",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"publisher": "oboki",
 	"repository": "https://github.com/oboki/sql-styler",
 	"engines": {
