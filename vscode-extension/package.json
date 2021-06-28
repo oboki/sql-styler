@@ -1,14 +1,21 @@
 {
 	"name": "sql-styler",
 	"displayName": "SQL Styler",
-	"description": "Make your SQL pretty.",
+	"description": "Format your SQL code pretty and readable.",
 	"icon": "icon.png",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"publisher": "oboki",
 	"repository": "https://github.com/oboki/sql-styler",
 	"engines": {
 		"vscode": "^1.32.0"
 	},
+	"categories": [
+		"Formatters"
+	],
+	"keywords": [
+		"sql",
+		"formatter"
+	],
 	"activationEvents": [
 		"onCommand:extension.sqlStyler"
 	],
