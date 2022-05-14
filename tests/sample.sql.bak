@@ -1,0 +1,11 @@
+select a.k
+     , max(b.v) as max_v
+     , avg(c.v) as avg_v
+     , min(d.v) as min_v
+     , count(e.v) as cnt
+  from tab_e a inner join
+       tab_f b on a.k = b.k left outer join
+       tab_g c on a.k = c.k
+ where a.k = 'abc'
+ group by a
+;

@@ -1,114 +1,115 @@
 keywords = {
     "SELECT": {
-        default: {
-            padding: 0
-        },
-        pushState: {
-            state: "select",
-            padding : 0
+        "default": {
+            "padding": 0
         }
     },
     "FROM": {
-        default: {
-            padding: 2,
-            lineBreak: true
-        },
-        popState: {}
+        "default": {
+            "padding": 2,
+            "lineBreak": true
+        }
     },
     "WHERE": {
-        default: {
-            padding: 1,
-            lineBreak: true
+        "default": {
+            "padding": 1,
+            "lineBreak": true
         }
     },
     "AND": {
-        default: {
-            padding: 3,
-            lineBreak: true
+        "default": {
+            "padding": 3,
+            "lineBreak": true
         }
     },
     "GROUP": {
-        default: {
-            padding: 1,
-            lineBreak: true
+        "default": {
+            "padding": 1,
+            "lineBreak": true
         }
     },
     "JOIN": {
-        default: {
-            padding: 2,
-            lineBreak: true
+        "default": {
+            "padding": 2,
+            "lineBreak": true
         }
     },
     "FULL": {
-        default: {
-            padding: 7,
-            lineBreak: true
+        "default": {
+            "padding": 7,
+            "lineBreak": true
         }
     },
     "RIGHT": {
-        default: {
-            padding: 7,
-            lineBreak: true
+        "default": {
+            "padding": 7,
+            "lineBreak": true
         }
     },
     "LEFT": {
-        default: {
-            padding: 7,
-            lineBreak: true
+        "default": {
+            "padding": 7,
+            "lineBreak": true
         }
     },
     "OUTER": {
-        default: {
-            padding: 7,
-            lineBreak: true
+        "default": {
+            "padding": 7,
+            "lineBreak": true
         }
     },
     "INNER": {
-        default: {
-            padding: 7,
-            lineBreak: true
+        "default": {
+            "padding": 7,
+            "lineBreak": true
         }
     },
     ",": {
-        default: {
-            padding: 0,
-        },
-        select: {
-            padding: 5,
-            lineBreak: true
-        },
+        "default": {
+            "padding": 5,
+            "lineBreak": true
+        }
     },
     "/*": {},
     "*/": {},
     "(": {
-        default: {
-            padding: 1,
+        "default": {
+            "padding": 1,
         },
-        subquery: {
-            padding: 0,
-            lineBreak: true
+        "subquery": {
+            "pading": 7,
+            "lineBreak": true
         },
-        pushStateBefore: {
-            when: "SELECT",
-            state: "subquery",
-            padding: 7
-        },
-        pushState: {
-            state: "function",
-            padding: 0
+        "pushStateBefore": {
+            "when": "SELECT",
+            "type": "subquery"
         }
     },
     ")": {
-        default: {
-            padding: 0,
-            lineBreak: true
-        },
-        function: {
-            padding: 0
-        },
-        popState: {}
+        "default": {
+            "padding": 0,
+        }
     },
 }
+
+/**
+ * Returns whether the given argument is a keyword. 
+ * 
+ * @param {String} word 
+ * @returns {Boolean}
+ */
+function isReservedWord(word) {
+    return [
+        'SELECT', 'FROM', 'JOIN', 'AND', ';',
+        'WHERE', 'BETWEEN', 'GROUP BY', 'ON',
+        'WHEN', 'ELSE', 'CASE', 'THEN', 'AS',
+        'HAVING', 'ORDER BY', 'CREATE', 'END',
+        '(', ')', ',', '/*', '*/', 'INSERT',
+        'FULL', 'OUTER', 'LEFT' , 'RIGHT', 'INNER', 'CROSS',
+        'IN', 'INTO', 'OVERWRITE', 'VALUES'
+    ].includes(word.toUpperCase());
+}
+
 
 class CustomArray extends Array {
     /**
@@ -118,7 +119,7 @@ class CustomArray extends Array {
      */
     peek(index=-1) {
         if (this.length > index * (-1) - 1) {
-            return this.slice(index)[0].state;
+            return this.slice(index)[0].type;
         }
         return '';
     }
@@ -324,19 +325,17 @@ module.exports = function format(text) {
             keyword = '';
         }
 
-        console.log(word);
-        console.log(stack);
-        console.log('\n');
-
         /**
          * handling comments.
          */
         if (['/*','*/'].includes(keyword) || stack.peek() === 'COMMENT') {
             if (keyword === '/*') {
-                stack.push({
-                    state: 'COMMENT',
-                    padding: 0
-                });
+                stack.push(
+                    {
+                        type: 'COMMENT',
+                        margin: 0
+                    }
+                );
             } else if (keyword === '*/') {
                 stack.pop();
             }
@@ -346,37 +345,13 @@ module.exports = function format(text) {
         }
 
         if (word.toUpperCase() in keywords) {
+
             const attr = keywords[word.toUpperCase()];
 
-            // handle state
-            if ("pushStateBefore" in attr && peekNextKeyword(tokens) === attr.pushStateBefore.when) {
-                stack.push({
-                    state: attr.pushStateBefore.state,
-                    padding: attr.pushStateBefore.padding
-                });
-
-                indent += attr.pushStateBefore.padding
-            } else if ("pushState" in attr) {
-                stack.push({
-                    state: attr.pushState.state,
-                    padding: attr.pushState.padding
-                });
-                indent += attr.pushState.padding
+            if ("lineBreak" in attr.default && attr.default.lineBreak === true) {
+                formatted.push('\n');
             }
 
-            let opts = {}
-
-            if (stack.peek() in attr) {
-                opts = attr[stack.peek()]
-            } else {
-                opts = attr.default
-            }
-
-            if ("lineBreak" in opts && opts.lineBreak === true) {
-                formatted.pushItems('\n', ' '.repeat(indent));
-            }
-
-            // handle join clause
             if (word.toUpperCase() === "JOIN") {
                 if (formatted.slice(-2, -1).join('').toUpperCase() === "INNER") {
                     formatted.pop();
@@ -390,21 +365,22 @@ module.exports = function format(text) {
                     formatted.pushItems(formatted.pop());
                     formatted.pushItems(' ', tmp, ' ', word);
                 } else {
-                    formatted.push(' '.repeat(opts.padding));
+                    formatted.push(' '.repeat(attr.default.padding));
                 }
+                // console.log(formatted);
             } else {
-                formatted.pushItems(' '.repeat(opts.padding), word);
+                formatted.pushItems(' '.repeat(attr.default.padding), word);
             }
 
-            if ("popState" in attr) {
-                const poped = stack.pop();
-                indent -= poped.padding;
-            }
+            // handle state
+            if ("pushStateBefore" in attr && peekNextKeyword(tokens) === attr.pushStateBefore.when) {
+                stack.push({
+                    type: attr.pushStateBefore.type,
+                    margin: 0
+                });
 
+            }
         } else {
-            if (last_keyword === "JOIN") {
-                formatted.pushItems('\n', ' '.repeat(6));
-            }
             formatted.pushItems(' ', word);
         }
 
