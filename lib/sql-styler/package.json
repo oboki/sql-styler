@@ -1,0 +1,14 @@
+{
+  "name": "sql-styler",
+  "version": "0.1.0",
+  "description": "sql formatter",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^17.0.33"
+  }
+}
