@@ -7,7 +7,7 @@ export const keywords: ObjType = {
         default: {
             padding: 0
         },
-        pushState: [
+        "pushState": [
             {
                 state: "select",
                 padding: 0
@@ -19,12 +19,12 @@ export const keywords: ObjType = {
             padding: 2,
             lineBreak: true
         },
-        popState: [
+        "popState": [
             {
-                current: "select"
+                when: "select"
             }
         ],
-        pushState: [
+        "pushState": [
             {
                 state: "from",
                 padding: 0
@@ -36,9 +36,9 @@ export const keywords: ObjType = {
             padding: 1,
             lineBreak: true
         },
-        popState: [
+        "popState": [
             {
-                current: "on"
+                when: "on"
             }
         ],
     },
@@ -60,9 +60,9 @@ export const keywords: ObjType = {
             padding: 1,
             lineBreak: false
         },
-        popState: [
+        "popState": [
             {
-                current: "between"
+                when: "between"
             }
         ],
     },
@@ -71,9 +71,9 @@ export const keywords: ObjType = {
             padding: 1,
             lineBreak: true
         },
-        popState: [
+        "popState": [
             {
-                current: "on"
+                when: "on"
             }
         ],
     },
@@ -82,15 +82,15 @@ export const keywords: ObjType = {
             padding: 7,
             lineBreak: true
         },
-        pushState: [
+        "pushState": [
             {
                 state: "join",
                 padding: 0
             }
         ],
-        popState: [
+        "popState": [
             {
-                current: "on"
+                when: "on"
             }
         ],
     },
@@ -99,12 +99,12 @@ export const keywords: ObjType = {
             padding: 1,
             lineBreak: false
         },
-        popState: [
+        "popState": [
             {
-                current: "join"
+                when: "join"
             }
         ],
-        pushState: [
+        "pushState": [
             {
                 state: "on",
                 padding: 0
@@ -152,25 +152,28 @@ export const keywords: ObjType = {
     },
     "/*": {},
     "*/": {},
-    ";": {
-        default: {}
-    },
+    ";": {},
     "(": {
         default: {
             padding: 1,
+        },
+        subquery: {
+            padding: 0,
+            lineBreak: true
         },
         function: {
             padding: 0,
             lineBreak: false
         },
-        pushState: [
+        "pushState": [
             {
-                next: "select",
+                when: "select",
                 state: "subquery",
+                next: true,
                 padding: 8
             },
             {
-                current: "on",
+                when: "on",
                 state: "condition",
                 padding: 1
             },
@@ -179,9 +182,9 @@ export const keywords: ObjType = {
                 padding: 0
             },
         ],
-        popState: [
+        "popState": [
             {
-                current: "from"
+                when: "from"
             }
         ],
     },
@@ -192,6 +195,7 @@ export const keywords: ObjType = {
         },
         function: {
             padding: 0,
+            lineBreak: false
         },
         on: {
             padding: 0,
@@ -202,16 +206,17 @@ export const keywords: ObjType = {
             lineBreak: false
         },
         subquery: {
-            padding: 0,
+            popedState: true,
+            padding: 7,
             lineBreak: true
         },
-        popState: [{}]
+        "popState": [{}]
     },
     "between": {
         default: {
             padding: 1,
         },
-        pushState: [
+        "pushState": [
             {
                 state: "between",
                 padding: 0
@@ -223,7 +228,7 @@ export const keywords: ObjType = {
             padding: 1,
             lineBreak: false
         },
-        pushState: [
+        "pushState": [
             {
                 state: "case",
                 padding: 0
@@ -235,9 +240,9 @@ export const keywords: ObjType = {
             padding: 0,
             lineBreak: true
         },
-        popState: [
+        "popState": [
             {
-                current: "case"
+                when: "case"
             }
         ],
     },
@@ -266,11 +271,6 @@ export const keywords: ObjType = {
         condition: {
             padding: 1,
             lineBreak: false,
-        },
-        popState: [
-            {
-                current: "from"
-            }
-        ]
+        }
     },
 }
