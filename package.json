@@ -1,0 +1,91 @@
+{
+	"name": "sql-styler",
+	"displayName": "SQL Styler",
+	"description": "Make your SQL look clean.",
+	"icon": "img/sql-styler-icon.png",
+	"version": "0.1.0",
+	"publisher": "oboki",
+	"repository": "https://github.com/oboki/sql-styler",
+	"engines": {
+		"vscode": "^1.75.0"
+	},
+	"categories": [
+		"Formatters"
+	],
+	"keywords": [
+		"sql",
+		"formatter"
+	],
+	"main": "./extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "extension.sqlStylerForBigquery",
+				"title": "SQL Styler: Format SQL (Bigquery)"
+			},
+			{
+				"command": "extension.sqlStylerForDb2",
+				"title": "SQL Styler: Format SQL (Db2)"
+			},
+			{
+				"command": "extension.sqlStylerForHive",
+				"title": "SQL Styler: Format SQL (Hive)"
+			},
+			{
+				"command": "extension.sqlStylerForMysql",
+				"title": "SQL Styler: Format SQL (Mysql)"
+			},
+			{
+				"command": "extension.sqlStylerForMariadb",
+				"title": "SQL Styler: Format SQL (Mariadb)"
+			},
+			{
+				"command": "extension.sqlStylerForPostgresql",
+				"title": "SQL Styler: Format SQL (Postgresql)"
+			},
+			{
+				"command": "extension.sqlStylerForSnowflake",
+				"title": "SQL Styler: Format SQL (Snowflake)"
+			},
+			{
+				"command": "extension.sqlStylerForSqlite",
+				"title": "SQL Styler: Format SQL (Sqlite)"
+			},
+			{
+				"command": "extension.sqlStylerForTransactsql",
+				"title": "SQL Styler: Format SQL (Transactsql)"
+			},
+			{
+				"command": "extension.sqlStylerForFlinksql",
+				"title": "SQL Styler: Format SQL (Flinksql)"
+			},
+			{
+				"command": "extension.sqlStylerForImpala",
+				"title": "SQL Styler: Format SQL (Impala)"
+			},
+			{
+				"command": "extension.sqlStyler",
+				"title": "SQL Styler: Format SQL (Deprecated)"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "extension.sqlStyler",
+				"key": "alt+shift+s",
+				"mac": "ctrl+shift+s",
+				"when": "editorTextFocus"
+			}
+		]
+	},
+	"scripts": {
+		"build-nsp": "git clone https://github.com/oboki/node-sql-parser-private.git && cd node-sql-parser-private && npm i && npm run build",
+		"install-nsp": "npm run build-nsp && mv node-sql-parser-private/output/prod node_modules/node-sql-parser && rm -rf node-sql-parser-private",
+		"build": "npm i && npm run install-nsp && vsce package"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.75.0"
+	},
+	"dependencies": {
+		"big-integer": "^1.6.48"
+	}
+}
