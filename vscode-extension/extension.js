@@ -1,49 +1,100 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+const ASTParser = require('node-sql-parser');
 const vscode = require('vscode');
 const format = require('./sql-styler.js');
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+const formatASTifiedSQL = (sql, database) => {
+    const parser = new ASTParser.Parser()
+    const opt = { database: database };
+    const ast = parser.astify(`${sql};`, opt);
+    let formatted = parser.sqlify(ast, opt).replaceAll('`', '');
+
+    formatted = Array.from(formatted.split('\n'), (x) => {
+        if (x.match(/CASE[\s\S]+END[\s\S]+END/)) // if nested
+            return x;
+        const matched = x.match(/CASE[\s\S]+END/);
+        if (matched)
+            if (x.split('WHEN').length > 2) {
+                return x
+                    .split('WHEN').join(`\n${' '.repeat(matched.index + 5)}WHEN`)
+                    .split('ELSE').join(`\n${' '.repeat(matched.index + 5)}ELSE`)
+                    .split('END' ).join(`\n${' '.repeat(matched.index    )}END`);
+            }
+        return x;
+    }).join('\n');
+
+    formatted = Array.from(formatted.split('\n'), (x) => {
+        const splitted = x.split(' AND ');
+        if (splitted.length > 1) {
+            try {
+                const matched = x.match(/ (WHERE|WHEN|ON|BETWEEN) /);
+                return x
+                    .split(' AND ')
+                    .join(`\n${' '.repeat(matched.index + matched[0].length - 4)}AND `)
+                    .replace(/BETWEEN ([\s\S]+)\n\s+AND ([\s\S]+)/, 'BETWEEN $1 AND $2');
+            } catch (err) {
+                console.log(x)
+                console.log(err)
+                return x;
+            }
+        }
+        return x;
+    }).join('\n');
+
+    return formatted;
+}
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "SQL Styler" is now active!');
+	console.log('Extension "SQL Styler" is now Active!');
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('extension.sqlStyler', function () {
-		// Display a message box to the user
-		// vscode.window.showInformationMessage('Hello World!');
+    const dialects = [
+        "Bigquery",
+        "Db2",
+        "Hive",
+        "Mysql",
+        "Mariadb",
+        "Postgresql",
+        "Snowflake",
+        "Sqlite",
+        "Transactsql",
+        "Flinksql",
+        "Impala"
+    ];
+    dialects.forEach((dialect) => {
+        context.subscriptions.push(vscode.commands.registerCommand(`extension.sqlStylerFor${dialect}`, function () {
+            const editor = vscode.window.activeTextEditor;
+            if (editor) {
+                const document = editor.document;
+                const selection = editor.selection;
 
-		// The code you place here will be executed every time your command is executed
+                const word = document.getText(selection);
+                const formatted = `${formatASTifiedSQL(word, dialect.toLowerCase())};`;
+                editor.edit(editBuilder => {
+                    editBuilder.replace(selection, formatted);
+                });
+            }
+        }));
+    });
+
+	context.subscriptions.push(vscode.commands.registerCommand('extension.sqlStyler', function () {
 		const editor = vscode.window.activeTextEditor;
-
 		if (editor) {
 			const document = editor.document;
 			const selection = editor.selection;
 
-			// Get the word within the selection
 			const word = document.getText(selection);
 			const formatted = format(word);
 			editor.edit(editBuilder => {
 				editBuilder.replace(selection, formatted);
 			});
 		}
-	});
-
-	context.subscriptions.push(disposable);
+	}));
 }
 
-// this method is called when your extension is deactivated
 function deactivate() {}
 
-// eslint-disable-next-line no-undef
 module.exports = {
 	activate,
 	deactivate

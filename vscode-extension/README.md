@@ -1,86 +1,95 @@
 # SQL Styler
 
-Make your SQL pretty.
+Make your SQL look clean.
 
 ## Introduction
 
 `SQL Styler` makes your SQL code more organized and readable.
 
+This extension converts plain-text SQL to AST and then converts it back to SQL. It is powered by [`node-sql-parser`](https://github.com/taozhi8833998/node-sql-parser) and supports the following dialects.
+
+* BigQuery
+* DB2
+* FlinkSQL
+* Hive
+* Impala
+* MariaDB
+* MySQL
+* PostgreSQL
+* Snowflake
+* SQLite
+* TransactSQL
+
+![](img/sql-styler-dialects.png)
+
 ## Usage
 
 1. Select the SQL text you want to format.
-2. Execute `SQL Styler: Format SQL` from the command palette. Or, press the shortcut. 
-
-### Shortcut
-
-* Windows
-  * `Shift` + `Alt` + `S`
-* Mac
-  * `Shift` + `Ctrl` + `S`
+2. Execute `SQL Styler: Format SQL` from the command palette.
 
 ## SQL style example
 
-formatted by `SQL Styler`.
+This is an example SQL formatted by `SQL Styler`.
 
 ```sql
-select a.a /* double-dashed comments will be replaced like C-style comments. */
-     , max(a.b) as max_b /* * * multi * line * comments * will be compressed into single-line. */
-     , max(a.c) as max_c
-     , sum(b.cnt) as sum_cnt
-     , nvl(cast(max(case when a.cnt > 0 and b.max_v > 0 then 'A'
-                         when a.cnt > 0 and b.max_v < 0 then 'B'
-                         when a.cnt < 0 and b.max_v > 0 then 'C'
-                         when a.cnt < 0 and b.max_v < 0 then 'D'
-                                                        else (select a.k_1
-                                                                   , case when a.k_1 is null then 'A'
-                                                                          when a.k_1 > 'V' then 'A'
-                                                                                           else 'B'
-                                                                     end as v
-                                                                from (select a.k_1
-                                                                           , a.k_2
-                                                                           , max(a.col) as max_col
-                                                                        from tab_d a inner join
-                                                                             tab_f b on (a.k_1 = b.k_1
-                                                                                     and a.k_2 = b.k_2
-                                                                                     and a.k_3 = b.k_3
-                                                                                     and a.k_4 = b.k_4)
-                                                                       group by a.k_1, a.k_2
-                                                                     ) a
-                                                               where a.max_col > 120
-                                                             )
-                    end) as STRING) ,'') as some_case
-  from (select a.k /* SELECT , FROM , WHERE , ... , JOIN: Reserved words in comments are treated as comments. */
+SELECT a.a
+     , MAX(a.b) AS max_b
+     , MAX(a.c) AS max_c
+     , SUM(b.cnt) AS sum_cnt
+     , nvl(CAST(MAX(CASE 
+                         WHEN a.cnt > 0
+                          AND b.max_v > 0 THEN 'A' 
+                         WHEN a.cnt > 0
+                          AND b.max_v < 0 THEN 'B' 
+                         WHEN a.cnt < 0
+                          AND b.max_v > 0 THEN 'C' 
+                         WHEN a.cnt < 0
+                          AND b.max_v < 0 THEN 'D' 
+                         ELSE 'Z' 
+                    END) AS STRING), '') AS some_case 
+  FROM (SELECT a.k
              , b.v
              , c.max_v
              , c.avg_v
              , c.min_v
-             , c.cnt
-          from tab_a a inner join
-               tab_b b on (a.k = b.k
-                       and b.d = 'dd') left outer join
-               (select a.k
-                     , max(b.v) as max_v
-                     , avg(c.v) as avg_v
-                     , min(d.v) as min_v
-                     , count(e.v) as cnt
-                  from tab_e a inner join
-                       tab_f b on a.k = b.k left outer join
-                       tab_g c on a.k = c.k left outer join
-                       tab_h d on a.k = d.k left outer join
-                       tab_i e on a.k = e.k
-                 group by a
-               ) c on (a.c = c.a)
-         where a.col_1 >= 'filter' /* comment */
-           and b.col_2 between 'fil'
-                           and 'ter'
-       ) a left outer join
-       (select a.k
-             , max(v) as max_v
-          from tab_c a
-         where a.d >= 'filter'
-         group by a.k
-        having count(1) > 0
-       ) b on (a.k = b.k)
- order by 1, 2
-;
+             , c.cnt 
+          FROM tab_a AS a
+               INNER JOIN
+               tab_b AS b 
+                 ON (a.k = b.k
+                AND b.d = 'dd')
+               LEFT OUTER JOIN
+               (SELECT a.k
+                     , MAX(b.v) AS max_v
+                     , AVG(c.v) AS avg_v
+                     , MIN(d.v) AS min_v
+                     , COUNT(e.v) AS cnt 
+                  FROM tab_e AS a
+                       INNER JOIN
+                       tab_f AS b 
+                         ON a.k = b.k
+                       LEFT OUTER JOIN
+                       tab_g AS c 
+                         ON a.k = c.k
+                       LEFT OUTER JOIN
+                       tab_h AS d 
+                         ON a.k = d.k
+                       LEFT OUTER JOIN
+                       tab_i AS e 
+                         ON a.k = e.k 
+                 GROUP BY a) AS c 
+                 ON (a.c = c.a) 
+         WHERE a.col_1 >= 'filter'
+           AND b.col_2 BETWEEN 'fil' AND 'ter') AS a
+       LEFT OUTER JOIN
+       (SELECT a.k
+             , MAX(v) AS max_v 
+          FROM tab_c AS a 
+         WHERE a.d >= 'filter' 
+         GROUP BY a.k 
+        HAVING COUNT(1) > 0 
+         ORDER BY 2 DESC 
+         LIMIT 1) AS b 
+         ON (a.k = b.k) 
+ ORDER BY 1 ASC, 2 ASC;
 ```
