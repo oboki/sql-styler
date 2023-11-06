@@ -3,7 +3,7 @@
 	"displayName": "SQL Styler",
 	"description": "Make your SQL look clean.",
 	"icon": "img/sql-styler-icon.png",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"publisher": "oboki",
 	"repository": "https://github.com/oboki/sql-styler",
 	"engines": {
