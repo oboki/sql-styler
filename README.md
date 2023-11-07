@@ -29,7 +29,7 @@ This extension converts plain-text SQL to AST and then converts it back to SQL. 
 
 ## SQL style example
 
-This is an example SQL formatted by `SQL Styler`.
+The following are examples of SQL formatted by `SQL Styler`.
 
 ```sql
 SELECT a.a
@@ -148,4 +148,15 @@ INSERT INTO
      ( 1,2,'A',0.9 ),
      ( 1,2,'A',0.9 ),
      ( 1,2,'A',0.9 );
+
+SELECT 1 AS N 
+ UNION ALL 
+SELECT 1 
+  FROM (SELECT 1 
+         UNION ALL 
+        SELECT 1 
+         UNION ALL 
+        SELECT 1) AS A 
+ UNION ALL 
+SELECT 1;
 ```
