@@ -36,14 +36,13 @@ SELECT a.a
      , MAX(a.b) AS max_b
      , MAX(a.c) AS max_c
      , SUM(b.cnt) AS sum_cnt
-     , nvl(CAST(MAX(CASE 
-                         WHEN a.cnt > 0
+     , nvl(CAST(MAX(CASE WHEN a.cnt > 0 
                           AND b.max_v > 0 THEN 'A' 
-                         WHEN a.cnt > 0
+                         WHEN a.cnt > 0 
                           AND b.max_v < 0 THEN 'B' 
-                         WHEN a.cnt < 0
+                         WHEN a.cnt < 0 
                           AND b.max_v > 0 THEN 'C' 
-                         WHEN a.cnt < 0
+                         WHEN a.cnt < 0 
                           AND b.max_v < 0 THEN 'D' 
                          ELSE 'Z' 
                     END) AS STRING), '') AS some_case 
@@ -56,8 +55,8 @@ SELECT a.a
           FROM tab_a AS a
                INNER JOIN
                tab_b AS b 
-                 ON (a.k = b.k
-                AND b.d = 'dd')
+                 ON (a.k = b.k 
+                 AND b.d = 'dd')
                LEFT OUTER JOIN
                (SELECT a.k
                      , MAX(b.v) AS max_v
@@ -67,7 +66,8 @@ SELECT a.a
                   FROM tab_e AS a
                        INNER JOIN
                        tab_f AS b 
-                         ON a.k = b.k
+                         ON a.k = b.k 
+                         AND a.c = 'VAL'
                        LEFT OUTER JOIN
                        tab_g AS c 
                          ON a.k = c.k
@@ -79,7 +79,7 @@ SELECT a.a
                          ON a.k = e.k 
                  GROUP BY a) AS c 
                  ON (a.c = c.a) 
-         WHERE a.col_1 >= 'filter'
+         WHERE a.col_1 >= 'filter' 
            AND b.col_2 BETWEEN 'fil' AND 'ter') AS a
        LEFT OUTER JOIN
        (SELECT a.k
@@ -91,7 +91,8 @@ SELECT a.a
          ORDER BY 2 DESC 
          LIMIT 1) AS b 
          ON (a.k = b.k) 
- ORDER BY 1 ASC, 2 ASC;
+ WHERE A BETWEEN B AND C 
+ ORDER BY 1 ASC, 2 ASC ;
 
 CREATE TABLE 
        TAB_A 
@@ -99,7 +100,7 @@ CREATE TABLE
      , COL_B VARCHAR(128)
      , COL_C TEXT
      , COL_D STRING
-     );
+     ) ;
 
   WITH CTE_A
     AS (SELECT 1 AS N 
@@ -113,7 +114,7 @@ SELECT *
   FROM CTE_A AS A
        LEFT OUTER JOIN
        CTE_B AS B 
-         ON (A.N = B.N);
+         ON (A.N = B.N) ;
 
 INSERT OVERWRITE 
        TAB_B 
@@ -132,7 +133,7 @@ SELECT 1
          ORDER BY 1 ASC, 2 ASC 
          LIMIT 1) AS A 
  ORDER BY 1 ASC 
- LIMIT 99, 0;
+ LIMIT 99, 0 ;
 
 INSERT INTO 
        TAB_A 
@@ -147,7 +148,7 @@ INSERT INTO
      ( 1,2,'A',0.9 ),
      ( 1,2,'A',0.9 ),
      ( 1,2,'A',0.9 ),
-     ( 1,2,'A',0.9 );
+     ( 1,2,'A',0.9 ) ;
 
 SELECT 1 AS N 
  UNION ALL 
